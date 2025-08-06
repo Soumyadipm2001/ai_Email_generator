@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>AI Email Generator</title>
+  </head>
+  <body>
+    <h1>Generate Email with AI</h1>
+
+    <form id="emailForm">
+        <label>Receiver:</label><br>
+        <input type="text" id="receiver" placeholder="Sir/Madam"><br><br>
+
+        <label>Topic:</label><br>
+        <input type="text" id="topic" placeholder="e.g., apology for late response"><br><br>
+
+        <label>Tone:</label><br>
+        <select id="tone">
+            <option value="formal">Formal</option>
+            <option value="informal">Informal</option>
+            <option value="friendly">Friendly</option>
+        </select><br><br>
+
+        <button type="submit">Generate Email</button>
+    </form>
+    <h1>Generate Email:</h1>
+    <pre id="result"></pre>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    receiver: document.getElementById('receiver').value,
+                    topic: document.getElementById('topic').value,
+                    tone: document.getElementById('tone').value,
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.email) {
+                    document.getElementById('result').textContent = data.email;
+                } else {
+                    document.getElementById('result').textContent = "Error: " + data.error;
+                }
+          });
+        });
+    </script>
+  </body>
+</html>
